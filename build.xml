@@ -1,0 +1,88 @@
+<project name="HazelcastServer" basedir="." default="build">
+	<property name="dir.src" value="src" />
+	<property name="dir.classes" value="classes" />
+	<property name="dir.resources" value="resources" />
+	<property name="dir.build" value="build" />
+	<property name="dir.config" value="config" />
+	<property name="dir.script" value="script" />
+	<property name="dir.release" value="release" />
+	<property name="dir.lib" value="lib" />
+	<tstamp>
+		<format property="MICROSTAMP" pattern="yyMMddHHmm" />
+	</tstamp>
+	<property name="product.name" value="HazelcastServer" />
+	<property name="product.version" value="0.1.0" />
+	<property name="product.version.micro" value="0.1.0.${MICROSTAMP}" />
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${dir.resources}/lib/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+
+	<path id="path.lib">
+		<fileset dir="${dir.lib}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${dir.resources}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="${dir.classes}" includeemptydirs="true" quiet="true" />
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${dir.build}">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="prepare">
+		<mkdir dir="${dir.build}" />
+		<mkdir dir="${dir.classes}" />
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${dir.build}">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+		<mkdir dir="${dir.build}/lib" />
+		<mkdir dir="${dir.build}/config" />
+		<mkdir dir="${dir.build}/bin" />
+		<mkdir dir="${dir.build}/logs" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac includeantruntime="false" srcdir="${dir.src}" destdir="${dir.classes}" encoding="utf-8" optimize="on" debug="on" fork="true" compiler="modern" source="1.6" target="1.6">
+			<classpath>
+				<path refid="path.lib" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="${dir.build}/lib/${product.name}-${product.version}.jar" basedir="${dir.classes}" duplicate="add">
+		</jar>
+	</target>
+
+	<target name="build" depends="jar">
+		<copy todir="${dir.build}/lib">
+			<fileset dir="${dir.lib}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${dir.build}/config">
+			<fileset dir="${dir.config}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${dir.build}/bin">
+			<fileset dir="${dir.script}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${dir.build}/lib" file="${dir.config}/log4j.properties">
+		</copy>
+		<chmod dir="${dir.build}/bin" perm="711" includes="**/*.sh" />
+	</target>
+</project>

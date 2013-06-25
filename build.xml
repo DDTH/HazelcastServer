@@ -1,12 +1,12 @@
-<project name="HazelcastServer" basedir="." default="build">
+<project name="HazelcastServer" basedir="." default="help">
 	<property name="dir.src" value="src" />
 	<property name="dir.classes" value="classes" />
 	<property name="dir.resources" value="resources" />
 	<property name="dir.build" value="build" />
 	<property name="dir.config" value="config" />
-	<property name="dir.script" value="script" />
 	<property name="dir.release" value="release" />
 	<property name="dir.lib" value="lib" />
+	<property name="dir.installer" value="installer" />
 	<tstamp>
 		<format property="MICROSTAMP" pattern="yyMMddHHmm" />
 	</tstamp>
@@ -28,6 +28,17 @@
 			<include name="*.jar" />
 		</fileset>
 	</path>
+
+	<target name="help" description="Usage information">
+		<echo>ant -p for list of available targets</echo>
+		<echo>    ant help    : Display this screen</echo>
+		<echo>    ant build   : Build Hazelcast server</echo>
+		<echo>    ant install : Run the installer</echo>
+	</target>
+
+	<target name="install" depends="build" description="Install HazelcastServer">
+		<ant dir="${dir.installer}" antfile="installer.xml" inheritall="false" />
+	</target>
 
 	<target name="clean">
 		<delete dir="${dir.classes}" includeemptydirs="true" quiet="true" />
@@ -53,7 +64,9 @@
 	</target>
 
 	<target name="compile" depends="prepare">
-		<javac includeantruntime="false" srcdir="${dir.src}" destdir="${dir.classes}" encoding="utf-8" optimize="on" debug="on" fork="true" compiler="modern" source="1.6" target="1.6">
+		<javac includeantruntime="false" srcdir="${dir.src}" destdir="${dir.classes}"
+			encoding="utf-8" optimize="on" debug="on" fork="true" compiler="modern"
+			source="1.6" target="1.6">
 			<classpath>
 				<path refid="path.lib" />
 			</classpath>
@@ -61,7 +74,8 @@
 	</target>
 
 	<target name="jar" depends="compile">
-		<jar jarfile="${dir.build}/lib/${product.name}-${product.version}.jar" basedir="${dir.classes}" duplicate="add">
+		<jar jarfile="${dir.build}/lib/${product.name}-${product.version}.jar"
+			basedir="${dir.classes}" duplicate="add">
 		</jar>
 	</target>
 
@@ -73,11 +87,6 @@
 		</copy>
 		<copy todir="${dir.build}/config">
 			<fileset dir="${dir.config}">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${dir.build}/bin">
-			<fileset dir="${dir.script}">
 				<include name="**/*" />
 			</fileset>
 		</copy>

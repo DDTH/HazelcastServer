@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-######!/bin/sh
-
-HAZELCAST_SERVER_HOME=.
+HAZELCAST_SERVER_HOME=@@HAZELCAST_SERVER_HOME@@
 HAZELCAST_SERVER_PID="$HAZELCAST_SERVER_HOME/hazelcast_server.pid"
 
+JAVA_MEM_MB=$2
+if [ "$MEM_LIMIT" = "" ]
+then
+    JAVA_MEM_MB=32
+fi
+
 JAVA=$(which java)
-JAVA_OPTS="-server -Xms128m -Xmx128m -Djava.net.preferIPv4Stack=true"
+JAVA_OPTS="-server -Xms${JAVA_MEM_MB}m -Xmx${JAVA_MEM_MB}m -Djava.net.preferIPv4Stack=true"
 JAVA_OPTS+=("-DhazelcastServerHome=$HAZELCAST_SERVER_HOME")
 JAVA_OPTS+=("-classpath $HAZELCAST_SERVER_HOME/lib:$HAZELCAST_SERVER_HOME/lib/*")
 JAVA_OPTS+=("-DconfigFile=$HAZELCAST_SERVER_HOME/config/hazelcast.xml")
@@ -22,7 +26,7 @@ running()
 
 usage()
 {
-    echo "Usage: ${0##*/} {start|stop} "
+    echo "Usage: ${0##*/} <{start|stop}> [JVM mem limit in mb]"
     exit 1
 }
 

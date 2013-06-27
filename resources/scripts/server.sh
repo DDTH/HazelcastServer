@@ -6,7 +6,7 @@ HAZELCAST_SERVER_PID="$HAZELCAST_SERVER_HOME/hazelcast_server.pid"
 JAVA_MEM_MB=$2
 if [ "$MEM_LIMIT" = "" ]
 then
-    JAVA_MEM_MB=32
+    JAVA_MEM_MB=64
 fi
 
 

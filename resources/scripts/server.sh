@@ -9,11 +9,13 @@ then
     JAVA_MEM_MB=32
 fi
 
+
 JAVA=$(which java)
-JAVA_OPTS="-server -Xms${JAVA_MEM_MB}m -Xmx${JAVA_MEM_MB}m -Djava.net.preferIPv4Stack=true"
+JAVA_OPTS="-server -Xms${JAVA_MEM_MB}m -Xmx${JAVA_MEM_MB}m -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true -XX:+UseParNewGC -XX:+UseConcMarkSweepGC"
+JAVA_OPTS+=("-XX:PrintFLSStatistics=1 -XX:PrintCMSStatistics=1 -XX:+PrintTenuringDistribution -XX:+PrintGCDetails -XX:+PrintGCDateStamps -verbose:gc -Xloggc:$HAZELCAST_SERVER_HOME/logs/garbage.log")
 JAVA_OPTS+=("-DhazelcastServerHome=$HAZELCAST_SERVER_HOME")
-JAVA_OPTS+=("-classpath $HAZELCAST_SERVER_HOME/lib:$HAZELCAST_SERVER_HOME/lib/*")
 JAVA_OPTS+=("-DconfigFile=$HAZELCAST_SERVER_HOME/config/hazelcast.xml")
+JAVA_OPTS+=("-classpath $HAZELCAST_SERVER_HOME/lib:$HAZELCAST_SERVER_HOME/lib/*")
 JAVA_OPTS+=("ddth.hazelcastserver.HazelcastServerBootstrap")
 
 RUN_CMD=("$JAVA" ${JAVA_OPTS[@]})

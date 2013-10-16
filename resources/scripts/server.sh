@@ -4,7 +4,7 @@ HAZELCAST_SERVER_HOME=@@HAZELCAST_SERVER_HOME@@
 HAZELCAST_SERVER_PID="$HAZELCAST_SERVER_HOME/hazelcast_server.pid"
 
 JAVA_MEM_MB=$2
-if [ "$MEM_LIMIT" = "" ]
+if [ "$JAVA_MEM_MB" = "" ]
 then
     JAVA_MEM_MB=64
 fi

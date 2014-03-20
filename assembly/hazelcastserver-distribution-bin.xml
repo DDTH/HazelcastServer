@@ -1,0 +1,92 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+	<id>bin</id>
+
+	<formats>
+		<format>dir</format>
+		<format>zip</format>
+	</formats>
+
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<fileSets>
+		<fileSet>
+			<directory>../hazelcastserver-bootstrap/src/main/scripts</directory>
+			<outputDirectory>${brand.name-final}/bin</outputDirectory>
+			<includes>
+				<include>*.properties</include>
+				<include>*.sh</include>
+				<include>*.bat</include>
+				<include>*.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>../hazelcastserver-bootstrap/src/main/resources</directory>
+			<outputDirectory>${brand.name-final}/bin</outputDirectory>
+			<includes>
+				<include>hazelcast.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+            <directory>../hazelcastserver-bootstrap/src/main/resources</directory>
+            <outputDirectory>${brand.name-final}/lib</outputDirectory>
+            <includes>
+                <include>log4j.properties</include>
+            </includes>
+        </fileSet>
+	</fileSets>
+
+	<files>
+		<file>
+			<source>../README.md</source>
+			<outputDirectory>${brand.name-final}</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>../RELEASE-NOTES.md</source>
+			<outputDirectory>${brand.name-final}</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>../LICENSE.txt</source>
+			<outputDirectory>${brand.name-final}</outputDirectory>
+		</file>
+		<file>
+			<source>../EMPTY</source>
+			<outputDirectory>${brand.name-final}/logs</outputDirectory>
+		</file>
+	</files>
+
+	<!-- since we use moduleSets to filter project artifacts, useProjectArtifact 
+		should be false -->
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>${brand.name-final}/lib</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
+			<includes>
+				<include>com.hazelcast:*</include>
+				<include>org.slf4j:*</include>
+				<include>log4j:*</include>
+			</includes>
+		</dependencySet>
+	</dependencySets>
+
+	<moduleSets>
+		<moduleSet>
+			<!-- Enable access to all projects in the current multi-module build! -->
+			<useAllReactorProjects>true</useAllReactorProjects>
+
+			<!-- Now, select which projects to include in this module-set. -->
+			<includes>
+				<include>com.github.ddth:hazelcastserver-bootstrap</include>
+			</includes>
+			<binaries>
+				<outputDirectory>${brand.name-final}/lib</outputDirectory>
+				<unpack>false</unpack>
+			</binaries>
+		</moduleSet>
+	</moduleSets>
+</assembly>
